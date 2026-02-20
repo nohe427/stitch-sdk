@@ -10,6 +10,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
     "version:sync": "bun scripts/sync-versions.ts",
     "prepack:local": "npm run version:sync",
     "pack:local": "bun scripts/pack-release.ts --local",
