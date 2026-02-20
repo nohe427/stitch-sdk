@@ -10,6 +10,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "format:check": "prettier --check .",
     "typecheck": "turbo run typecheck",
     "version:sync": "bun scripts/sync-versions.ts",
     "prepack:local": "npm run version:sync",
@@ -17,7 +18,7 @@
     "predeploy:release": "npm run version:sync",
     "deploy:release": "bun scripts/pack-release.ts",
     "validate:release": "bun scripts/validate-release.ts",
-    "smoke:test": "bun scripts/smoke-test.ts"
+    "test:smoke": "bun scripts/smoke-test.ts"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",
