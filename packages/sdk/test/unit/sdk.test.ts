@@ -148,9 +148,21 @@ describe("SDK Unit Tests", () => {
   });
 
   describe("Stitch Class (Identity Map)", () => {
-    it("should not have a getProject method — use project(id) instead", () => {
+    it("getProject should call get_project tool and return a Project instance", async () => {
       const sdk = new Stitch(mockClient);
-      expect(typeof (sdk as any).getProject).toBe("undefined");
+
+      (mockClient.callTool as Mock).mockResolvedValue({
+        name: "projects/proj-123"
+      });
+
+      const result = await sdk.getProject("proj-123");
+
+      expect(mockClient.callTool).toHaveBeenCalledWith("get_project", {
+        projectId: "proj-123",
+        name: "projects/proj-123"
+      });
+      expect(result).toBeInstanceOf(Project);
+      expect(result.id).toBe("proj-123");
     });
 
     it("should not have a createProject method — use callTool or stitchTools() instead", () => {
@@ -190,7 +202,8 @@ describe("SDK Unit Tests", () => {
       expect(mockClient.callTool).toHaveBeenCalledWith("generate_screen_from_text", {
         projectId: projectId,
         prompt: prompt,
-        deviceType: undefined
+        deviceType: undefined,
+        modelId: undefined
       });
 
       expect(result).toBeInstanceOf(Screen);
