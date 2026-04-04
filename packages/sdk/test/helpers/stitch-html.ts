@@ -68,6 +68,7 @@ export function writePreviewApp(files: Record<string, string>, outputDir: string
 
   for (const [filename, content] of Object.entries(files)) {
     const dest = path.join(ROOT_FILES.has(filename) ? outputDir : srcDir, filename);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.writeFileSync(dest, content);
   }
 
