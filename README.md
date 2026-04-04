@@ -155,7 +155,7 @@ const tools = stitchTools({
 
 ## ADK Integration
 
-Use Stitch tools with the Google Agent Development Kit (ADK):
+Use Stitch tools with the [Google Agent Development Kit (ADK) for TypeScript](https://adk.dev/get-started/typescript/):
 
 ```ts
 import { stitchAdkTools } from "@google/stitch-sdk/adk";
