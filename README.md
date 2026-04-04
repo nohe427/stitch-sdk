@@ -153,6 +153,34 @@ const tools = stitchTools({
 });
 ```
 
+## ADK Integration
+
+Use Stitch tools with the Google Agent Development Kit (ADK):
+
+```ts
+import { stitchAdkTools } from "@google/stitch-sdk/adk";
+import { LlmAgent } from "@google/adk";
+
+// Get all Stitch tools formatted as ADK FunctionTools
+const tools = stitchAdkTools();
+
+// You can now pass these tools to your ADK agents
+const designerAgent = new LlmAgent({
+  name: "Designer",
+  model: "gemini-2.5-pro",
+  instruction: "You are a designer. Create a project and generate a screen.",
+  tools,
+});
+```
+
+Filter to specific tools:
+
+```ts
+const tools = stitchAdkTools({
+  include: ["create_project", "generate_screen_from_text", "get_screen"],
+});
+```
+
 ## API Reference
 
 ### `Stitch`
