@@ -262,4 +262,47 @@ describe("StitchToolClient", () => {
       expect(connectCount).toBe(1);
     });
   });
+
+  // ─── Slice 3: httpPost transport ────────────────────────────────
+  describe("httpPost", () => {
+    // Test 10: sends X-Goog-Api-Key header
+    it("sends X-Goog-Api-Key header in the request", async () => {
+      const client = new StitchToolClient({ apiKey: "test-key" });
+      let capturedHeaders: Record<string, string> = {};
+
+      (globalThis as any).fetch = vi.fn().mockImplementation((_url: string, init: RequestInit) => {
+        capturedHeaders = Object.fromEntries(
+          Object.entries(init.headers as Record<string, string>),
+        );
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ screens: [] }),
+        } as any);
+      });
+
+      await client.httpPost("projects/p/screens:batchCreate", { parent: "projects/p", requests: [] });
+      expect(capturedHeaders["X-Goog-Api-Key"]).toBe("test-key");
+    });
+
+    // Test 11: throws StitchError with AUTH_FAILED on 401
+    it("throws StitchError with AUTH_FAILED on a 401 response", async () => {
+      const client = new StitchToolClient({ apiKey: "bad-key" });
+
+      (globalThis as any).fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 401,
+        statusText: "Unauthorized",
+        text: () => Promise.resolve("Unauthorized"),
+      } as any);
+
+      const { StitchError } = await import("../../src/spec/errors.js");
+      await expect(
+        client.httpPost("projects/p/screens:batchCreate", {}),
+      ).rejects.toThrow(StitchError);
+
+      await client.httpPost("projects/p/screens:batchCreate", {}).catch((err) => {
+        expect(err.code).toBe("AUTH_FAILED");
+      });
+    });
+  });
 });

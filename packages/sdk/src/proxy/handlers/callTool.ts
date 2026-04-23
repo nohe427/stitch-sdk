@@ -16,6 +16,7 @@ import { CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { ProxyContext } from '../client.js';
 import { forwardToStitch } from '../client.js';
+import { isVirtualTool, handleVirtualTool } from '../virtual-tools.js';
 
 /**
  * Register the tools/call handler.
@@ -27,6 +28,19 @@ export function registerCallToolHandler(
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
     console.error(`[stitch-proxy] Calling tool: ${name}`);
+
+    if (isVirtualTool(name)) {
+      try {
+        return await handleVirtualTool(name, args, ctx);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error(`[stitch-proxy] Virtual tool call failed: ${errorMessage}`);
+        return {
+          content: [{ type: 'text', text: `Error calling virtual tool ${name}: ${errorMessage}` }],
+          isError: true,
+        };
+      }
+    }
 
     try {
       const result = await forwardToStitch(ctx.config, 'tools/call', {

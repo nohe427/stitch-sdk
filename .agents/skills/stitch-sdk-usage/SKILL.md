@@ -68,6 +68,38 @@ const screens = await ds.apply([
 ]);
 ```
 
+## Uploading Images
+
+Upload an existing image file (PNG, JPG, JPEG, WEBP) to create a screen directly from a mockup or asset.
+
+```typescript
+import { stitch } from '@google/stitch-sdk';
+
+const project = stitch.project("your-project-id");
+
+// Upload a local image file
+const [screen] = await project.uploadImage('./mockup.png', {
+  title: 'Home Screen',
+});
+
+console.log(screen.id);
+const html = await screen.getHtml();
+const imageUrl = await screen.getImage();
+```
+
+The method reads the file from disk and posts it directly to the Stitch REST API — no output token constraints apply (unlike agent-driven MCP calls).
+
+**Supported formats:** `.png`, `.jpg`, `.jpeg`, `.webp`
+
+**Options:**
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Display title for the created screen |
+| `createScreenInstances` | `boolean` | `true` | Whether to add the screen to the canvas |
+
+**Throws** `StitchError` with codes: `NOT_FOUND` (file not found), `UNKNOWN_ERROR` (unsupported format or upload failure), `AUTH_FAILED` (invalid API key).
+
+
 ## Generating and Iterating on Screens
 
 ```typescript
@@ -150,11 +182,14 @@ Error codes: `AUTH_FAILED`, `NOT_FOUND`, `PERMISSION_DENIED`, `RATE_LIMITED`, `N
 | `generate(prompt, deviceType?)` | `Promise<Screen>` | Generate a screen from a text prompt |
 | `screens()` | `Promise<Screen[]>` | List all screens in the project |
 | `getScreen(screenId)` | `Promise<Screen>` | Retrieve a specific screen by ID |
+| `uploadImage(filePath, opts?)` | `Promise<Screen[]>` | Upload an image file and create a screen from it |
 | `createDesignSystem(designSystem)` | `Promise<DesignSystem>` | Create a design system for this project |
 | `listDesignSystems()` | `Promise<DesignSystem[]>` | List all design systems |
 | `designSystem(id)` | `DesignSystem` | Reference by ID (no API call) |
 
 `deviceType`: `"MOBILE"` | `"DESKTOP"` | `"TABLET"` | `"AGNOSTIC"`
+
+`uploadImage` supported formats: `.png` `.jpg` `.jpeg` `.webp`
 
 ### DesignSystem Class
 

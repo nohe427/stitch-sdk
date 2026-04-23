@@ -12,15 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Domain classes (generated)
-export { Stitch } from "../generated/src/stitch.js";
-export { Project } from "../generated/src/project.js";
+// Domain classes
+export { Stitch } from "./stitch-ext.js";
+export { Project } from "./project-ext.js";  // Extended: includes uploadImage(), downloadAssets()
 export { Screen } from "../generated/src/screen.js";
 export { DesignSystem } from "../generated/src/designsystem.js";
+
 
 // Infrastructure (handwritten)
 export { StitchToolClient } from "./client.js";
 export { StitchProxy } from "./proxy/core.js";
+
+// Virtual Tools
+export {
+  downloadAssetsTool,
+} from "./proxy/virtual-tools.js";
+export type { VirtualToolDefinition } from "./spec/client.js";
 
 // Singleton
 export { stitch } from "./singleton.js";
@@ -50,3 +57,19 @@ export type {
   ScreenInstance,
   ThumbnailScreenshot,
 } from "./types.js";
+
+// Upload types
+export type {
+  UploadImageInput,
+  UploadImageResult,
+  UploadImageErrorCode,
+} from "./spec/upload.js";
+
+// Download types
+export type {
+  DownloadAssetsInput,
+  DownloadAssetsOutput,
+  DownloadAssetsResult,
+  DownloadedScreenTrace,
+  DownloadAssetsErrorCode,
+} from "./spec/download.js";
